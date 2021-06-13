@@ -22,14 +22,6 @@ struc mmap_arg
         .offset         resd 1
 endstruc
 
-struc mremap_arg
-        .old_addr       resd 1
-        .old_size       resd 1
-        .new_size       resd 1
-        .flags          resd 1
-        .new_addr       resd 1
-endstruc
-
 section .text
 
 ; arguments:
