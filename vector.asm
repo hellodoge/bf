@@ -45,6 +45,12 @@ NewVector:
     mov     ebx, esp
     int     0x80
 
+    cmp     eax, map_failed
+    jne     .success
+
+    mov     eax, 0
+
+.success:
     mov     [esi + vector.address], eax
     mov     [esi + vector.size], edi
 
