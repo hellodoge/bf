@@ -50,7 +50,7 @@ NewVector:
     mov     [ebp - mmap_arg_size + mmap_arg.offset],    dword 0
     mov     eax, sys_mmap
     mov     ebx, esp
-    int 0x80
+    int     0x80
 
     mov     [esi + vector.address], eax
     mov     [esi + vector.size], edi
