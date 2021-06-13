@@ -3,10 +3,13 @@ bits 32
 %include "vector.inc"
 
 sys_mmap        equ 90
+sys_mremap      equ 163
 prot_read       equ 1
 prot_write      equ 2
 map_private     equ 2
 map_anonymous   equ 32
+mremap_maymove  equ 1
+map_failed      equ -1
 
 global NewVector
 
@@ -26,8 +29,6 @@ struc mremap_arg
         .flags          resd 1
         .new_addr       resd 1
 endstruc
-
-; TODO implement ResizeVector
 
 section .text
 
@@ -58,4 +59,33 @@ NewVector:
     mov     esp, ebp
     pop     ebp
 
+    ret
+
+; arguments:
+;               esi: pointer to buffer
+;               edi: new size
+; return value:
+;               address on success, 0 on failure
+
+ResizeVector:
+    push    esi
+    push    edi
+    mov     eax, sys_mremap
+    mov     ebx, [esi + vector.address]
+    mov     ecx, [esi + vector.size]
+    mov     edx, edi
+    mov     esi, mremap_maymove
+    int     0x80
+    pop     edi
+    pop     esi
+
+    cmp     eax, map_failed
+    je      .fail
+
+    mov     [esi + vector.address], eax
+    mov     [esi + vector.size], edi
+    ret
+    
+.fail:
+    mov     eax, 0
     ret
