@@ -46,11 +46,11 @@ NewVector:
     int     0x80
 
     cmp     eax, map_failed
-    jne     .success
+    jne     .Success
 
     mov     eax, 0
 
-.success:
+.Success:
     mov     [esi + vector.address], eax
     mov     [esi + vector.size], edi
 
@@ -78,12 +78,12 @@ ResizeVector:
     pop     esi
 
     cmp     eax, map_failed
-    je      .fail
+    je      .Fail
 
     mov     [esi + vector.address], eax
     mov     [esi + vector.size], edi
     ret
     
-.fail:
+.Fail:
     mov     eax, 0
     ret
