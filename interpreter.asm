@@ -3,6 +3,7 @@ bits 32
 %include "vector.inc"
 
 extern  NewVector
+extern  DeleteVector
 
 sys_read    equ 3
 sys_write   equ 4
@@ -150,6 +151,9 @@ RunInterpreter:
 Eof:
     mov     esp, ebp
     pop     ebp
+
+    mov     esi, loop_buffer
+    call    DeleteVector
 
     mov     al, [edi]
     ret
