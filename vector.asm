@@ -3,6 +3,7 @@ bits 32
 %include "vector.inc"
 
 sys_mmap        equ 90
+sys_munmap      equ 91
 sys_mremap      equ 163
 prot_read       equ 1
 prot_write      equ 2
@@ -86,4 +87,16 @@ ResizeVector:
     
 .Fail:
     mov     eax, 0
+    ret
+
+; arguments:
+;               esi: pointer to buffer
+; return value:
+;               0 on success, -1 on failure
+
+DeleteVector:
+    mov     eax, sys_munmap
+    mov     ebx, [esi + vector.address]
+    mov     ecx, [esi + vector.size]
+    int     0x80
     ret
