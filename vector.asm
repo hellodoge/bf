@@ -13,6 +13,8 @@ mremap_maymove  equ 1
 map_failed      equ -1
 
 global NewVector
+global ResizeVector
+global DeleteVector
 
 struc mmap_arg
         .addr           resd 1
