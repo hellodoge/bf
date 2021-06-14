@@ -189,7 +189,7 @@ ReadByte:
 
 BufferizeOperationInBuffer:
     cmp     ebx, esi            ; ret if the byte is from buffer
-    jl      .Ret                ; do x86 have conditional ret?
+    jl      .Ret                ; does x86 have conditional ret?
 
     mov     [esi], al
     inc     esi
