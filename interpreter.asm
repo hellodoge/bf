@@ -3,6 +3,7 @@ bits 32
 %include "vector.inc"
 
 extern  NewVector
+extern  ResizeVector
 extern  DeleteVector
 
 sys_read    equ 3
@@ -191,6 +192,38 @@ BufferizeOperationInBuffer:
     cmp     ebx, esi            ; ret if the byte is from buffer
     jl      .Ret                ; does x86 have conditional ret?
 
+    mov     ecx, [loop_buffer + vector.address]
+    add     ecx, [loop_buffer + vector.size]
+    cmp     esi, ecx            ; is there a need of resizing buffer?
+    jl      .Store
+
+    sub     ebx, [loop_buffer + vector.address]
+    sub     esi, [loop_buffer + vector.address]
+
+    push    ebx
+    push    esi
+    push    edi
+
+    mov     edi, [loop_buffer + vector.size]
+    add     edi, edi            ; cheaper than multiply by two
+
+    mov     esi, loop_buffer
+
+    push    eax
+    push    edx
+
+    call    ResizeVector
+
+    pop     edx
+    pop     eax
+    pop     edi
+    pop     esi
+    pop     ebx
+
+    add     esi, [loop_buffer + vector.address]
+    add     ebx, [loop_buffer + vector.address]
+
+.Store:
     mov     [esi], al
     inc     esi
     inc     ebx
@@ -252,7 +285,9 @@ SkipLoop:
     cmp     edx, 1              ; do not bufferize skipped loops if it not nested
     je      .Loop
 
+    push    ecx
     call    BufferizeOperationInBuffer
+    pop     ecx
 
 .Ret:
     dec     edx                 ; we're out of skipped loop
