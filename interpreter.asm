@@ -145,6 +145,9 @@ RunInterpreter:
     jmp     .BufferizeOperation
 
 .BufferizeOperation:
+    cmp     edx, 0                  ; do not bufferize if the byte outside of a loop
+    je      .GetNextOperation
+
     call    BufferizeOperationInBuffer
     jmp     .GetNextOperation
 
@@ -187,8 +190,6 @@ ReadByte:
 BufferizeOperationInBuffer:
     cmp     ebx, esi            ; ret if the byte is from buffer
     jl      .Ret                ; do x86 have conditional ret?
-    cmp     edx, 0              ; ret if the byte outside of a loop
-    je      .Ret
 
     mov     [esi], al
     inc     esi
